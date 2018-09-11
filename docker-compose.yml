@@ -1,0 +1,26 @@
+version: '3.3'
+
+services:
+
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+      MONGO_INITDB_DATABASE: nodebb
+    volumes:
+      - ./data/mongodb:/data/db
+      - ./config/mongdb/init:/docker-entrypoint-initdb.d
+    expose:
+      - "27017"
+
+  forum:
+    image: nodebb/docker
+    restart: always
+    depends_on:
+      - mongo
+    ports:
+      - "4567:4567"
+    volumes:
+      - ./data/nodebb:/usr/src/app/public/uploads
